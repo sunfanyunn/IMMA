@@ -13,6 +13,19 @@ import sys
 import torch
 
 
+def rotate(origin, point, angle):
+    """
+    Rotate a point counterclockwise by a given angle around a given origin.
+
+    The angle should be given in radians.
+    """
+    ox, oy = origin
+    px, py = point[..., 0], point[..., 1]
+
+    qx = ox + math.cos(angle) * (px - ox) - math.sin(angle) * (py - oy)
+    qy = oy + math.sin(angle) * (px - ox) + math.cos(angle) * (py - oy)
+    return np.stack([qx, qy], -1)
+
 def get_graph_from_list(leaders):
     num_humans = len(leaders)
     normalized_A = torch.zeros((1, num_humans, num_humans))
@@ -125,7 +138,7 @@ def prepare_dataset(args):
     elif args.env == 'phase':
         all_data = []
         all_graphs = []
-        for fi in glob('../datasets/phase/collab/*.npy'):
+        for fi in glob('./datasets/phase/collab/*.npy'):
             data = np.load(fi)
             start_idx = 0
             for cursor in range(data.shape[0]-1):
@@ -209,7 +222,7 @@ def prepare_dataset(args):
     train_dataset, val_dataset, test_dataset = torch.utils.data.random_split(dataset, [train_size, val_size, test_size])
 
     if args.env == 'phase':
-        print('do data augmentation ...')
+        print('data augmentation ...')
         new_train_data = []
         new_train_labels = []
 

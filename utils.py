@@ -104,7 +104,7 @@ def get_graph_accuracy(model, generator, args):
 
         preds = model.multistep_forward(batch_data, batch_graph, 1)
         for global_idx in range(len(preds[0][0])):
-            pred_graph = preds[0][0][global_idx]
+            pred_graph = preds[0][0][global_idx].to(args.device)
             if pred_graph.shape[1] != pred_graph.shape[2]:
                 pred_graph = convert_graph(pred_graph)
             for i in range(pred_graph.shape[-1]):

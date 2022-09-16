@@ -1,4 +1,3 @@
-import networkx as nx
 import numpy as np
 import rvo2
 from crowd_sim.envs.policy.policy import Policy

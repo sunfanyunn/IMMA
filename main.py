@@ -266,7 +266,7 @@ def main(args):
                 os.path.basename(args.dataset_path),
                 args.model + '_' + args.encoder,
                 'gt' if args.gt else '',
-                ('softmax' if args.softmax else '') + ('-gumbel' if args.gumbel else ''),
+                ('-gumbel' if args.gumbel else ''),
                 'dis_obj' if args.dis_obj else '',
                 'l1' if args.l1 else '',
                 args.skip_first,
@@ -294,7 +294,7 @@ if __name__ == '__main__':
     parser.add_argument('--obs_frames', type=int, default=24)
     parser.add_argument('--rollouts', type=int, default=10)
     parser.add_argument('--lr', type=float, default=1e-6)
-    parser.add_argument('--gt', default=False, action='store_true', help='use ground truth graph or not')
+    parser.add_argument('--gt', default=False, action='store_true', help='use ground truth graph')
     parser.add_argument('--hidden_dim', type=int, default=24)
     parser.add_argument('--lambda1', type=float, default=0.01)
     parser.add_argument('--plt', default=False, action='store_true', help='progressive layered training')
@@ -302,7 +302,6 @@ if __name__ == '__main__':
     parser.add_argument('--skip_first', default=0, type=int)
     parser.add_argument('--kl', default=False, action='store_true')
     parser.add_argument('--kl_coef', default=1e-2, type=float)
-    parser.add_argument('--softmax', default=False, action='store_true')
     parser.add_argument('--dis_obj', default=False, action='store_true', help='use disentanglement loss')
     parser.add_argument('--burn_in', default=False, action='store_true')
     parser.add_argument('--gumbel', default=False, action='store_true')

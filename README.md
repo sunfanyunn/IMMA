@@ -5,6 +5,34 @@ For more details, please refer to the [paper](https://arxiv.org/abs/1909.13165).
 ## Setup
 1. Install [Python-RVO2](https://github.com/sybrenstuvel/Python-RVO2) library
 2. Install [socialforce](https://github.com/ChanganVR/socialforce) library
+3. Install necessary packages with pip
+```
+pip install -r requirements.txt
+```
+
+## Data Setup
+
+#### Social Navigation Environment ####
+This is a simulated environment inspired by
+https://github.com/vita-epfl/CrowdNav.
+After installing necessary dependencies, run `run_socialnav.sh` and
+the simulation would start. The resulting dataset will be stored at `datasets/*.tensor`.
+
+To inspect and interact with the environment (control the embodied agent with
+your arrow keys), do
+```
+cd data_utils/socialnav
+python human_play.py
+```
+`
+#### PHASE ####
+The preprocessed dataset is under `datasets/phase/collab`.
+Refer to `run_phase.sh`.
+
+#### NBA dataset ####
+Download the preprocessed dataset [here](https://drive.google.com/file/d/1eJbDHy3fOHfzOStf-jSuYCz_YQloQU3s/view?usp=sharing) and place it under `datasets`. 
+Alternatively, you can create your own dataset from raw sportVU logs (refer to [this repository](https://github.com/linouk23/NBA-Player-Movements) or the code under `data_utils/bball`)
+
 
 
 ## Citation
