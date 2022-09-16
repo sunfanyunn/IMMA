@@ -189,6 +189,7 @@ def prepare_dataset(args):
 
     elif args.env == 'bball':
         all_data = np.load('./datasets/all_data.npz.npy')
+        dataset_size = 300000
         x_min, x_max = all_data[:, :, :, 0].min(), all_data[:, :, :, 0].max()
         y_min, y_max = all_data[:, :, :, 1].min(), all_data[:, :, :, 1].max()
         scaling = [x_max, x_min, y_max, y_min]
@@ -196,7 +197,7 @@ def prepare_dataset(args):
         all_data[..., 1] = (all_data[..., 1] - y_min)/(y_max - y_min)
         all_data[..., 5:, 3] = 1.
         all_data[..., -1, 2:] = 1.
-        all_data = all_data[:args.dataset_size, ...]
+        all_data = all_data[:dataset_size, ...]
 
         print('loaded all_data')
         all_data, all_labels = all_data[:, :24, :, :], all_data[:, 24:, :, :]
