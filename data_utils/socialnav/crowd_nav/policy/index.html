@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<!-- entry_main.html.php -->
+        <head>
+        <meta charset="utf-8">
+            <base href="https://app.bl.ink" />
+            <title>BL.INK - Login</title>
+        <link rel="shortcut icon" href="https://app.bl.ink/favicon.ico" type="image/x-icon" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="ROBOTS" content="NOSTORE, NOFOLLOW" />
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+                    <meta name="description" content="Log in to your BL.INK account or create a new account to explore a wide range of link shortening tools to grow your brand."/>
+            
+        <!-- fontawesome -->
+        <script defer src="/includes/vendor/fontawesome/fontawesome.bundle.js?__v=1626806735"></script>
+        <!-- CSS -->
+        <link href="/includes/js/blink.css?__v=1626806735" rel="stylesheet">
+        <!-- Google Fonts, Montserrat, Roboto, Condensed -->
+        <link href="https://fonts.googleapis.com/css?family=Montserrat:300i|Roboto+Condensed:300,400,700|Roboto:300,300i,400,400i,500,700,900" rel="stylesheet">
+
+        
+                    </head>
+
+    <body style="background-color:white;">
+        <!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-WBR5NDB');</script>
+<!-- End Google Tag Manager -->
+
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-WBR5NDB"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
+                                    
+        <div style="background-repeat: no-repeat;
+                    background-image: url(/includes/img/blink-swarm-left-bg.png);
+                    background-attachment: scroll;
+                    background-position: bottom left;
+                    padding-bottom:225px;">
+            <!-- content -->
+            <div>
+    <div class="text-center" style="margin-top:55px; margin-bottom:33px;">
+        <p><a href="/"><img src="/includes/img/blink-60.png" width="300px" alt="BL.INK"/></a></p>
+            </div>
+
+    <div>
+        
+<div class="container" style="max-width:375px;">
+    
+    
+<div id="auth0-container"></div>
+
+<script src="https://cdn.auth0.com/js/lock/11.6.1/lock.min.js"></script>
+<script>
+var options = {
+    container: 'auth0-container',
+    autofocus: false,
+    allowShowPassword: true,
+    allowForgotPassword: false,
+    allowedConnections: ['facebook','google-oauth2','linkedin','twitter','beta-db','Blink-Prod-DB','dev-mike-db','DEVBroadway','qa-mas-db','Username-Password-Authentication'],
+    auth: {
+        params: {
+            scope: 'openid profile email offline_access',
+            prompt: 'select_account consent'
+        },
+        redirect: true,
+        redirectUrl: 'https://app.bl.ink/auth0_login',
+        responseType: 'code',
+        responseMode: 'form_post',
+        autoParseHash: true
+    },
+    socialButtonStyle: 'big',
+    configurationBaseUrl: 'https://cdn.auth0.com',
+    theme: {
+        primaryColor: '#382F8E'
+    },
+    };
+
+var lock = new Auth0Lock('6BgVWFgAr5QOX6yMAF0xS37pW0uzB0wv', 'login.bl.ink', options);
+lock.show();
+</script>
+
+
+    <div class="text-center">
+                    <p style="margin-top:30px;"><a href="/reset_password" style='text-decoration: underline; font: 17px "Roboto", sans-serif;'>Forgot your password?</a></p>
+                            <p style="margin-top:30px;"><a href="/register" style='text-decoration: underline; font: 17px "Roboto", sans-serif;'>Create an Account</a></p>
+            </div>
+</div>
+    </div>
+</div>
+            <!-- /content -->
+        </div>
+
+        <div class="footer mobile-hide" style="margin-top: -20px!important;">
+    <div class="bar1">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-2">
+                    <section>
+                        <div class="section-title">Solutions For:</div>
+                        <div>
+                            <ul>
+                                <li><a href="https://bl.ink/solo-and-expert/">Solo &amp; Expert</a></li>
+                                <li><a href="https://bl.ink/team-business/">Team &amp; Business</a></li>
+                                <li><a href="https://bl.ink/enterprise/">Enterprise</a></li>
+                                <li><a href="https://bl.ink/developers/">Developers</a></li>
+                            </ul>
+                        </div>
+                    </section>
+                </div>
+                <div class="col-md-2 offset-md-1">
+                    <section>
+                        <div class="section-title">Product</div>
+                        <div>
+                            <ul>
+                                <li><a href="https://bl.ink/features/">Features</a></li>
+                                <li><a href="https://bl.ink/pricing/">Pricing</a></li>
+                                <li><a href="/">Login</a></li>
+                                <li><a href="/register">Sign Up</a></li>
+                                <li><a href="https://bl.ink/request-a-demo/">Request A Demo</a></li>
+                            </ul>
+                        </div>
+                    </section>
+                </div>
+                <div class="col-md-2 offset-md-1">
+                    <section>
+                        <div class="section-title">Resources</div>
+                        <div>
+                            <ul>
+                                <li><a href="https://bl.ink/help-center/">Help Center</a></li>
+                                <li><a href="https://bl.ink/api-documentation/">API Documentation</a></li>
+                                <li><a href="https://bl.ink/blog">Blog</a></li>
+                                <li><a href="https://bl.ink/contact-us/">Contact Us</a></li>
+                                <li><a href="https://bl.ink/case-studies/">Case Studies</a></li>
+                            </ul>
+                        </div>
+                    </section>
+                </div>
+                <div class="col-md-2 offset-md-1">
+                    <section>
+                        <div class="section-title">Company</div>
+                        <div>
+                            <ul>
+                                <li><a href="https://bl.ink/about/">About</a></li>
+                                <li><a href="https://bl.ink/customers/">Customers</a></li>
+                                <li><a href="https://bl.ink/careers/">Careers</a></li>
+                                <li><a href="https://bl.ink/team/">Team</a></li>
+                                <li><a href="https://bl.ink/press/">Press</a></li>
+                            </ul>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="bar2">
+        <div class="container">
+            <div class="float-left">
+                <div class="copyright">© BL.INK
+                    <span class="tos-footer">
+                        <a href="https://bl.ink/terms-of-service/">Terms of Service</a> |
+                        <a href="https://bl.ink/privacy-policy/">Privacy Policy</a> |
+                        <a href="https://bl.ink/user-agreement/">User Agreement</a> |
+                        <a href="https://bl.ink/gdpr/">GDPR</a>
+                    </span>
+                </div>
+            </div>
+            <div class="float-right">
+                <ul class="social">
+                    <li>
+                        <a target="_blank" href="https://bl.ink/twitter" title="Twitter" class="twitter">
+                        <a target="_blank" rel="noreferer noopener" href="https://bl.ink/twitter" class="twitter">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                    </li>
+                    <li>
+                        <a target="_blank" rel="noreferer noopener" href="https://bl.ink/Facebook" title="Facebook" class="fb">
+                        <a target="_blank" rel="noreferer noopener" href="https://bl.ink/Facebook" class="fb">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                    </li>
+                    <li>
+                        <a target="_blank" rel="noreferer noopener" href="https://bl.ink/LinkedIn" class="linkedin">
+                            <i class="fab fa-linkedin-in"></i>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+        <!-- Mainly scripts -->
+        <script src="/includes/vendor/jquery/jquery.min.js?__v=1626806735"></script>
+        <script src="/includes/vendor/bootstrap/js/bootstrap.bundle.min.js?__v=1626806735"></script>
+        <script src="/includes/js/components.bundle.js?__v=1626806735"></script>
+
+        <!-- application source -->
+        <script type="application/javascript">
+        "use strict";
+
+        </script>
+
+        
+        
+        <script src="/includes/js/ui.js?__v=1625752569"></script>
+    </body>
+</html>
