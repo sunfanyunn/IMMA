@@ -1,12 +1,12 @@
 #!/bin/bash -ex
 
-# data_preparation
 
 randomseed=17
 dataset_size=100000
 obs_frames=24
 rollouts=10
 
+# data_preparation
 cd data_utils/socialnav
 python generate_dataset.py --dataset_size $dataset_size \
                            --randomseed $randomseed \
@@ -17,7 +17,6 @@ cd ../../
 env=socialnav
 model=imma
 data_fname=datasets/socialnav_default_${randomseed}_${dataset_size}_${obs_frames}_${rollouts}.tensor
-obs_frames=24
 hidden_dim=96
 
 python main.py --env $env --model $model --randomseed $randomseed \

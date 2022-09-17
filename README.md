@@ -18,26 +18,41 @@ pip install -r requirements.txt
 
 #### Social Navigation Environment ####
 This is a simulated environment inspired by
-https://github.com/vita-epfl/CrowdNav.
-After installing necessary dependencies, run `run_socialnav.sh` and
-the simulation would start. The resulting dataset will be stored at `datasets/*.tensor`.
+[https://github.com/vita-epfl/CrowdNav](https://github.com/vita-epfl/CrowdNav).
+After installing necessary dependencies, refer to the following sample commands to start the simulation.
+```.bash
+randomseed=17
+dataset_size=100000
+obs_frames=24
+rollouts=10
+
+cd data_utils/socialnav
+python generate_dataset.py --dataset_size $dataset_size \
+                           --randomseed $randomseed \
+                           --obs_frames ${obs_frames} \
+                           --rollouts ${rollouts}
+```
+The resulting dataset will be stored at `datasets/*.tensor`. You can make modifications to the config file `dat_utils/socialnav/configs/default.py` to change the simulation setting.
 
 To inspect and interact with the environment (control the embodied agent with
 your arrow keys):
-```
+```.bash
 cd data_utils/socialnav
 python human_play.py
 ```
 
 #### PHASE ####
 The preprocessed dataset is under `datasets/phase/collab`.
-Refer to `run_phase.sh`.
+To load the dataset, refer to the function *prepare_dataset* in `data_utils/load_dataset.py`.
 
 #### NBA dataset ####
 Download the preprocessed dataset [here](https://drive.google.com/file/d/1eJbDHy3fOHfzOStf-jSuYCz_YQloQU3s/view?usp=sharing) (or run `gdown 1eJbDHy3fOHfzOStf-jSuYCz_YQloQU3s`) and place it under `datasets`. 
 Alternatively, you can create your own dataset from raw sportVU logs (refer to [this repository](https://github.com/linouk23/NBA-Player-Movements) or the code under `data_utils/bball`)
+To load the dataset, refer to the function *prepare_dataset* in `data_utils/load_dataset.py`.
 
 
+## Training and Evaluation
+Find sample commands at `run_socialnav.sh`, `run_phase.sh` and `run_bball.sh`.
 
 ## Citation
 If you find the codes or paper useful for your research, please cite the following papers:
