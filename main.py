@@ -184,66 +184,66 @@ def main(args):
 
                 if epoch - best_epoch >= 100 or epoch >= args.max_epoch:
                     break
+    else:
+        for epoch in tqdm(range(1000000000)):
+            model.train()
+            tot_loss = 0.
+            tot_kl_loss = 0.
+            tot_l1_loss = 0.
+            optimizer.zero_grad()
+            for batch_data, batch_label in train_generator:
+                batch_graph = None
+                batch_data = batch_data.to(device)
+                batch_label = batch_label.to(device)
+                if args.gt:
+                    batch_graph = batch_label[:, 0, :, -num_humans:]
+                    assert batch_graph.shape[1] == num_humans
 
-    for epoch in tqdm(range(1000000000)):
-        model.train()
-        tot_loss = 0.
-        tot_kl_loss = 0.
-        tot_l1_loss = 0.
-        optimizer.zero_grad()
-        for batch_data, batch_label in train_generator:
-            batch_graph = None
-            batch_data = batch_data.to(device)
-            batch_label = batch_label.to(device)
-            if args.gt:
-                batch_graph = batch_label[:, 0, :, -num_humans:]
-                assert batch_graph.shape[1] == num_humans
+                preds = model.multistep_forward(batch_data, batch_graph, args.rollouts)
+                losses = calc_loss(preds, batch_label, args)
 
-            preds = model.multistep_forward(batch_data, batch_graph, args.rollouts)
-            losses = calc_loss(preds, batch_label, args)
+                optimizer.step()
+                tot_loss += losses.item()
 
-            optimizer.step()
-            tot_loss += losses.item()
+            if (epoch + 1) % 10 == 0:
+                model.eval()
+                print("epoch %d, loss %.3f" % (epoch + 1, tot_loss))
+                if args.l1:
+                    print('l1 loss {:.3f}'.format(tot_l1_loss))
+                if args.kl:
+                    print('kl loss {:.3f}'.format(tot_kl_loss))
+                val_losses = evaluate(model, val_generator, args, scaling)
+                test_losses = evaluate(model, test_generator, args, scaling)
+                graph_acc = get_graph_accuracy(model, test_generator, args)
+                print('test graph accuracy', np.max(graph_acc))
+                print('val_losses', val_losses[-1])
 
-        if (epoch + 1) % 10 == 0:
-            model.eval()
-            print("epoch %d, loss %.3f" % (epoch + 1, tot_loss))
-            if args.l1:
-                print('l1 loss {:.3f}'.format(tot_l1_loss))
-            if args.kl:
-                print('kl loss {:.3f}'.format(tot_kl_loss))
-            val_losses = evaluate(model, val_generator, args, scaling)
-            test_losses = evaluate(model, test_generator, args, scaling)
-            graph_acc = get_graph_accuracy(model, test_generator, args)
-            print('test graph accuracy', np.max(graph_acc))
-            print('val_losses', val_losses[-1])
+                if args.use_wandb:
+                    logs = {'epoch': epoch,
+                            'graph_accuracy': graph_acc,
+                            'val_loss': val_losses[-1],
+                            'test_loss': test_losses[-1],
+                            'train_loss': tot_loss,
+                             }
+                    wandb.log(logs)
 
-            if args.use_wandb:
-                logs = {'epoch': epoch,
-                        'graph_accuracy': graph_acc,
-                        'val_loss': val_losses[-1],
-                        'test_loss': test_losses[-1],
-                        'train_loss': tot_loss,
-                         }
-                wandb.log(logs)
+                new_best = False
+                new_best = val_losses[-1] < best_val_loss
+                new_best_val_loss = val_losses[-1]
 
-            new_best = False
-            new_best = val_losses[-1] < best_val_loss
-            new_best_val_loss = val_losses[-1]
+                if new_best:
+                    print('update best_val {} --> {}'.format(best_val_loss, new_best_val_loss))
+                    best_val_loss = new_best_val_loss
+                    torch.save(model, model_saved_name)
+                    torch.save(model.state_dict(), weights_saved_name)
+                    best_epoch = epoch
+                    test_loss = evaluate(model, test_generator, args, scaling)
+                elif epoch - best_epoch > 5:
+                    scheduler.step()
+                    print('learning rate', scheduler.get_last_lr())
 
-            if new_best:
-                print('update best_val {} --> {}'.format(best_val_loss, new_best_val_loss))
-                best_val_loss = new_best_val_loss
-                torch.save(model, model_saved_name)
-                torch.save(model.state_dict(), weights_saved_name)
-                best_epoch = epoch
-                test_loss = evaluate(model, test_generator, args, scaling)
-            elif epoch - best_epoch > 5:
-                scheduler.step()
-                print('learning rate', scheduler.get_last_lr())
-
-        if epoch - best_epoch >= 100 or epoch >= args.max_epoch:
-            break
+            if epoch - best_epoch >= 100 or epoch >= args.max_epoch:
+                break
 
     mutual_info_score = -1
     if args.mi_score:
