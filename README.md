@@ -1,6 +1,10 @@
-# Interaction Modeling with Multiplex Attention 
+# Interaction Modeling with Multiplex Attention
+Authors: [Fan-Yun Sun](https://cs.stanford.edu/~sunfanyun/), [Isaac Kauvar](https://ikauvar.github.io/), [Ruohan Zhang](https://ai.stanford.edu/~zharu/), [Jiachen Li](https://jiachenli94.github.io/), Mykel Kochenderfer, [Jiajun Wu](https://jiajunwu.com/), [Nick Haber](https://ed.stanford.edu/faculty/nhaber)
+
+Abstract: *Modeling multi-agent systems requires understanding how agents interact. Such systems are often difficult to model because they can involve a variety of types of interactions that layer together to drive rich social behavioral dynamics. Here we introduce a method for accurately modeling multi-agent systems. We present Interaction Modeling with Multiplex Attention (IMMA), a forward prediction model that uses a multiplex latent graph to represent multiple independent types of interactions and attention to account for relations of different strengths. We also introduce Progressive Layer Training, a training strategy for this architecture. We show that our approach outperforms state-of-the-art models in trajectory forecasting and relation inference, spanning three multi-agent scenarios: social navigation, cooperative task achievement, and team sports. We further demonstrate that our approach can improve zero-shot generalization and allows us to probe how different interactions impact agent behavior.*
+
 This repository contains the codes for our paper, which is accepted at NeurIPs 2022. 
-For more details, please refer to the [paper](https://arxiv.org/abs/1909.13165).
+For more details, please refer to the paper ([arxiv](https://arxiv.org/abs/2208.10660), [openreview](https://openreview.net/forum?id=SeHslYhFx5-).
 
 ## Environment Setup
 1. Install [Python-RVO2](https://github.com/sybrenstuvel/Python-RVO2) library
