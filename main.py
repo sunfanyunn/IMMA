@@ -266,7 +266,7 @@ def main(args):
                 os.path.basename(args.dataset_path),
                 args.model + '_' + args.encoder,
                 'gt' if args.gt else '',
-                ('-gumbel' if args.gumbel else ''),
+                'plt' if args.plt else '',
                 'dis_obj' if args.dis_obj else '',
                 'l1' if args.l1 else '',
                 args.skip_first,
@@ -304,7 +304,6 @@ if __name__ == '__main__':
     parser.add_argument('--kl_coef', default=1e-2, type=float)
     parser.add_argument('--dis_obj', default=False, action='store_true', help='use disentanglement loss')
     parser.add_argument('--burn_in', default=False, action='store_true')
-    parser.add_argument('--gumbel', default=False, action='store_true')
     parser.add_argument('--encoder', default='mlp', choices=['mlp', 'rnn', 'cnn'])
     parser.add_argument('--fixed', default=False, action='store_true')
     parser.add_argument('--mi_score', default=False, action='store_true')
