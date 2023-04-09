@@ -8,10 +8,9 @@ from models.modules import mlp
 
 class GAT(nn.Module):
     def __init__(self, args):
-        """ The current code might not be compatible with models trained with previous version
-        """
         super().__init__()
         self.args = args
+        self.env = args.env
         self.num_humans = args.num_humans
         self.obs_frames = args.obs_frames
         self.human_state_dim = args.feat_dim
@@ -28,11 +27,8 @@ class GAT(nn.Module):
             self.final_layer = mlp(self.hidden_dim, [self.hidden_dim, self.hidden_dim//2, self.human_state_dim])
             #torch.nn.Linear(self.hidden_dim, human_state_dim)
 
-        # TODO: try other dim size
         self.W = Parameter(torch.randn(self.hidden_dim, self.hidden_dim))
         # for visualization
-        self.A = None
-        self.env = args.env
 
     def get_embeddings(self, human_states):
         return self.encoder(human_states)
@@ -54,12 +50,6 @@ class GAT(nn.Module):
         return normalized_A, next_H
 
     def forward(self, human_states, batch_graph):
-        """
-        Embed current state tensor pair (robot_state, human_states) into a latent space
-        Each tensor is of shape (batch_size, # of agent, features)
-        :param state:
-        :return:
-        """
         # encoder
         embeddings = self.encoder(human_states)
         # dynamical

@@ -1,8 +1,8 @@
 #!/bin/bash -ex
 
-randomseed=17
 env=phase
 model=imma
+randomseed=17
 obs_frames=24
 rollouts=10
 hidden_dim=128

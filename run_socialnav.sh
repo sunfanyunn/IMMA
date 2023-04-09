@@ -1,6 +1,5 @@
 #!/bin/bash -ex
 
-
 randomseed=17
 dataset_size=100000
 obs_frames=24

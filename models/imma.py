@@ -26,8 +26,6 @@ class IMMA(nn.Module):
         self.hidden_dim = args.hidden_dim
         self.human_state_dim = args.feat_dim
         self.input_human_state_dim = args.feat_dim
-        self.tau = 0.5
-        self.hard = True
         self.alpha = 1.
 
         self.timesteps = args.obs_frames

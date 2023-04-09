@@ -25,7 +25,6 @@ def get_output_dir(args):
                                      str(args.lr),
                                      'burn_in' if args.burn_in else '',
                                      'kl-{}'.format(args.kl_coef) if args.kl else '',
-                                     'gumbel' if args.gumbel else '',
                                      args.env,
                                      str(args.edge_types),
                                      str(args.skip_first)])

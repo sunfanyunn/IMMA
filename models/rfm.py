@@ -30,8 +30,6 @@ class RFM(nn.Module):
         self.hidden_dim = args.hidden_dim
         self.human_state_dim = args.feat_dim
         self.input_human_state_dim = args.feat_dim
-        self.tau = 0.5
-        self.hard = True
 
         self.timesteps = args.obs_frames
         self.dims = args.hidden_dim
