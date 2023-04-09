@@ -55,7 +55,7 @@ To load the dataset, refer to the function *prepare_dataset* in `data_utils/load
 Find sample commands at `run_socialnav.sh`, `run_phase.sh` and `run_bball.sh`.
 
 ## Progressive Layered Training
-Loss curve visualized over the course of training IMMA with PLT. New layers are added after the model
+Loss curve visualized over the course of training IMMA with PLT on the NBA dataset. New layers are added after the model
 "converges".
 ![Teaser image](./plt.png)
 
