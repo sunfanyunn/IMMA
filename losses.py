@@ -3,6 +3,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 from utils import logsumexp
 
+
 def l1_regularizer(model, lambda_l1=0.1):
     lossl1 = 0
     for model_param_name, model_param_value in model.named_parameters():

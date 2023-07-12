@@ -6,6 +6,7 @@ from torch.nn.functional import softmax, relu
 from torch.nn import Parameter
 from models.modules import mlp
 
+
 class GAT(nn.Module):
     def __init__(self, args):
         super().__init__()

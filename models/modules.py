@@ -1,23 +1,16 @@
-import torch
-import torch.nn as nn
-import torch.nn.functional as F
-import math
-
 from torch.autograd import Variable
-# from utils import my_softmax, get_offdiag_indices, gumbel_softmax
-
-import logging
-import itertools
-import torch
-import torch.nn as nn
-from torch.nn.functional import softmax, relu
 from torch.nn import Parameter
+from torch.nn.functional import softmax, relu
+from torch.utils.data import DataLoader
+from torch.utils.data.dataset import TensorDataset
+import itertools
+import logging
+import math
 import numpy as np
 import torch
-from torch.utils.data.dataset import TensorDataset
-from torch.utils.data import DataLoader
+import torch.nn as nn
 import torch.nn.functional as F
-from torch.autograd import Variable
+
 
 def mlp(input_dim, mlp_dims, last_relu=False):
     layers = []

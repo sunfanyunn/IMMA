@@ -1,40 +1,19 @@
-import logging
-import argparse
-import importlib.util
-import os
-import torch
-import numpy as np
-import matplotlib.pyplot as plt
-import seaborn as sns
-import gym
-import logging
-
-import random
-import math
-
-import gym
-import matplotlib.lines as mlines
-from matplotlib import patches
-import numpy as np
-from numpy.linalg import norm
-
-import torch
-# from crowd_nav.utils.explorer import Explorer
-# from crowd_nav.policy.policy_factory import policy_factory
-# from crowd_sim.envs.utils.robot import Robot
-# from crowd_sim.envs.policy.orca import ORCA
-# from crowd_sim.envs.policy.policy_factory import policy_factory
-# from crowd_sim.envs.utils.state import tensor_to_joint_state, JointState, ObservableState
-# from crowd_sim.envs.utils.action import ActionXY
-# from crowd_sim.envs.utils.human import Human
-# from crowd_sim.envs.utils.info import *
-# from crowd_sim.envs.utils.utils import point_to_segment_dist
-
-from matplotlib.widgets import Slider
 from matplotlib import animation
-import matplotlib.pyplot as plt
 from matplotlib import patches
+from matplotlib.widgets import Slider
+from numpy.linalg import norm
+import argparse
+import gym
+import importlib.util
+import logging
+import math
 import matplotlib.lines as mlines
+import matplotlib.pyplot as plt
+import numpy as np
+import os
+import random
+import seaborn as sns
+import torch
 from utils import *
 
 
@@ -80,70 +59,6 @@ def cmap_map(function, cmap, name='colormap_mod', N=None, gamma=None):
         step_dict[clr] = np.vstack((step_list, y0[:, iclr], y1[:, iclr])).T
     return lsc(name, step_dict, N=N, gamma=gamma)
 
-
-def quick_visualization(model, test_generator, args, vis_num=10):
-    figs = []
-    print('start visualization ...')
-    for idx, (data, label) in tqdm(enumerate(test_generator.dataset)):
-        if idx == vis_num:
-            break
-        batch_label = label.unsqueeze(0).to(args.device)
-        batch_data = data.unsqueeze(0).to(args.device)
-        batch_graph = None
-        if args.gt:
-            batch_graph = batch_label[:, 0, :, -num_humans:]
-
-        with torch.no_grad():
-            preds = model.multistep_forward(batch_data, None, args.rollouts)
-            tmp_pred = [pred[-1] for pred in preds]
-            new_batch_data = torch.cat([batch_data[:, args.rollouts:, ...], torch.stack(tmp_pred, dim=1)], dim=1)
-            new_preds = model.multistep_forward(new_batch_data, None, args.rollouts)
-            preds = preds + new_preds
-
-        figs = plot_single_frame(batch_data, batch_label, preds, args, path=None, rollouts=args.rollouts+5)
-        figs[0].savefig('{}/traj_{}.png'.format(args.output_dir, idx))
-        figs[1].savefig('{}/heatmap_{}.png'.format(args.output_dir, idx))
-    return figs
-
-def quick_visualization_v1(model, test_generator, args, vis_num=10):
-    all_figs = []
-    print('start visualization ...')
-    # model.eval()
-    for idx, (data, label) in tqdm(enumerate(test_generator.dataset)):
-        if idx < vis_num: continue
-
-        batch_data = data.unsqueeze(0).to(device)
-        ## keep the last frame?
-        # batch_data[:, :-12, :, :] = 0.
-        batch_label = label.unsqueeze(0).to(device)
-
-        figs = []
-        for i in range(1, num_humans):
-            batch_graph = batch_label[:, 0, :, -num_humans:]
-            batch_graph[:, 0, :] = 0.
-            batch_graph[:, 0, i] = 1.
-
-            with torch.no_grad():
-                preds = model.multistep_forward(batch_data, batch_graph, args.rollouts)
-                tmp_pred = [pred[-1] for pred in preds]
-                new_batch_data = torch.cat([batch_data[:, args.rollouts:, ...], torch.stack(tmp_pred, dim=1)], dim=1)
-                new_preds = model.multistep_forward(new_batch_data, batch_graph, args.rollouts)
-                preds = preds + new_preds
-
-            [fig, fig1] = plot_single_frame(batch_data, batch_label, preds, args, path=None, rollouts=args.rollouts+5, plot_gt=False)
-            fig.savefig('{}/{}_{}.png'.format(args.output_dir, idx, i))
-            plt.close(fig)
-            plt.close(fig1)
-            del fig, fig1
-            gc.collect()
-            # figs.append(fig)
-        # all_figs.append(figs)
-
-        if idx > 50:
-            break
-
-    return figs
-
 def plot_single_frame(batch_data, batch_label, preds, args, path=None, rollouts=10, plot_gt=True):
     batch_data = batch_data.detach().cpu()
     batch_label = batch_label.detach().cpu()
@@ -174,10 +89,6 @@ def plot_single_frame(batch_data, batch_label, preds, args, path=None, rollouts=
     output_file = None
     x_offset = 0.2
     y_offset = 0.4
-    # cmap = plt.cm.get_cmap('hsv', 10)
-    # def darken(x, ):
-       # return x * 0.9
-    # cmap = cmap_map(darken, plt.get_cmap('hsv', 10))
     linewidth = 1.7
     colors = ['r', 'g', 'b', 'purple', 'peru']
     cmap = lambda x: colors[x]
@@ -185,18 +96,8 @@ def plot_single_frame(batch_data, batch_label, preds, args, path=None, rollouts=
     arrow_style = patches.ArrowStyle("->", head_length=3, head_width=3)
 
     fig, ax = plt.subplots(figsize=(20, 10))
-    # custom_lines = [mlines.Line2D([0], [0], color='red', linestyle='dotted'),
-                # mlines.Line2D([0], [0], color='white'),
-                # mlines.Line2D([0], [0], color='red', linestyle='solid')]
-    # ax.legend(custom_lines, ['Observed trajectories', 'Predicted trajectories', 'Ground Truth'])
 
-    # ax = axes[0,0]
     ax.tick_params(labelsize=12)
-    # ax.set_xlim(-11, 11)
-    # ax.set_ylim(-11, 11)
-    # ax.set_xlabel('x(m)', fontsize=14)
-    # ax.set_ylabel('y(m)', fontsize=14)
-
     human_cur_positions = [batch_data[0, -1, i, :2] for i in range(num_humans)] 
     if args.env == 'bball':
         human_colors = []
@@ -263,9 +164,8 @@ def plot_single_frame(batch_data, batch_label, preds, args, path=None, rollouts=
     fig2 = None
     if args.env == 'socialnav':
         fig2, axes = plt.subplots(1, 2, figsize=(25,10))
-        label = batch_label[0, 0, :, -num_humans:]#.argmax(dim=-1)
+        label = batch_label[0, 0, :, -num_humans:]
 
-        # axes[0,0].imshow(label, cmap='hot', interpolation='nearest')
         sns.heatmap(label.numpy(), ax=axes[0], cmap='Blues', vmin=0, vmax=1, linewidth=0.5)
         label = label.argmax(dim=-1)
 
@@ -282,20 +182,9 @@ def plot_single_frame(batch_data, batch_label, preds, args, path=None, rollouts=
         for i in range(pred_graph.shape[0]):
             pred_graph[i, :] = pred_graph[i, :] / pred_graph[i, :].sum()
         sns.heatmap(pred_graph, ax=axes[1], cmap='Blues', vmin=0, vmax=1, linewidth=0.5, xticklabels=False, yticklabels=False)
-        # pred_graph = convert_graph(preds[0][0][0])[0, ...]#.argmax(dim=-1)
-        # textstr += '\n\nunsupervised predictions:\n'
-        # for i in range(num_humans):
-            # textstr += '{} follows:{}, {}\n'.format(i,
-                                                    # pred_graph[i, :].argmax(dim=-1),
-                                                 # ' '.join(['{:.2f}'.format(pred_graph[i,j]) for j in range(num_humans)]))
-
-    # elif args.env.startswith('MFMACrowdSim'):
-        # for i, friends in enumerate(env.centralized_planner.adjacency):
-            # textstr += '{} follows {}.'.format(i, ','.join(list(map(str, np.flatnonzero(friends).tolist()))))
     else:
         pass
         # print('No Ground Truth Leader Follower')
-        # assert False
 
     if args.env == 'bball':
         plt.xlim(0, circle_radius)
@@ -310,9 +199,7 @@ def plot_single_frame(batch_data, batch_label, preds, args, path=None, rollouts=
         plt.savefig(path)
     return [fig, fig2]
 
-
 def plot(env, test_case, model, robot, args, path):
-
     def transform(obs):
         human_states_tensors = []
         for ob in obs:
@@ -334,15 +221,7 @@ def plot(env, test_case, model, robot, args, path):
     global_ob, _, done, info = env.step(zero_action)
     rewards.append(_)
     current_pos = np.array(robot.get_position())
-    # while not done:
-        # action = robot.act(ob)
-        # ob, _, done, info = env.step(action)
-        # rewards.append(_)
-        # current_pos = np.array(robot.get_position())
-        # logging.debug('Speed: %.2f', np.linalg.norm(current_pos - last_pos) / robot.time_step)
-        # last_pos = current_pos
 
-    # plt.rcParams['animation.ffmpeg_path'] = '/usr/bin/ffmpeg'
     mode = 'video'
     output_file = None
     x_offset = 0.2
@@ -364,11 +243,8 @@ def plot(env, test_case, model, robot, args, path):
     elif args.env.startswith('MFMACrowdSim'):
         for i, friends in enumerate(env.centralized_planner.adjacency):
             textstr += '{} follows {}.'.format(i, ','.join(list(map(str, np.flatnonzero(friends).tolist()))))
-    # else:
-        # assert False
+
     fig, ax = plt.subplots(figsize=(20, 10))
-    # plt.xlim(-5, 5)
-    # plt.ylim(-5, 5)
     plt.text(-10, 0, textstr, fontsize=24)
     plt.subplots_adjust(left=0.5)
 
@@ -419,9 +295,6 @@ def plot(env, test_case, model, robot, args, path):
                          color=robot_color, marker='*', linestyle='None',
                          markersize=15, label='Goal')
     robot_circle = plt.Circle(robot_positions[0], env.robot.radius, fill=False, color=robot_color)
-
-    # sensor_range = plt.Circle(robot_positions[0], env.robot_sensor_range, fill=False, ls='dashed')
-    # ax.add_artist(sensor_range)
 
     ax.add_artist(robot_circle)
     ax.add_artist(goal)
@@ -482,36 +355,7 @@ def plot(env, test_case, model, robot, args, path):
             arrows.extend(
                 [patches.FancyArrowPatch(*orientation[0], color=human_colors[i - 1], arrowstyle=arrow_style)])
 
-    # for arrow in arrows:
-        # ax.add_artist(arrow)
-
     global_step = 0
-
-    # if len(env.trajs) != 0:
-        # human_future_positions = []
-        # human_future_circles = []
-        # for traj in env.trajs:
-            # human_future_position = [[tensor_to_joint_state(traj[step+1][0]).human_states[i].position
-                                      # for step in range(env.robot.policy.planning_depth)]
-                                     # for i in range(env.human_num)]
-            # human_future_positions.append(human_future_position)
-
-        # for i in range(env.human_num):
-            # circles = []
-            # for j in range(env.robot.policy.planning_depth):
-                # circle = plt.Circle(human_future_positions[0][i][j], env.humans[0].radius/(1.7+j), fill=False, color=cmap(i))
-                # ax.add_artist(circle)
-                # circles.append(circle)
-            # human_future_circles.append(circles)
-
-    # boundaries = []
-    # for i, l in enumerate(env.centralized_planner.leaders):
-        # boundary = mlines.Line2D([humans[i].center[0], humans[l].center[0]],
-                                   # [humans[i].center[1], humans[l].center[1]],
-                                   # linewidth=3, linestyle='-', color='red')
-        # boundaries.append(boundary)
-        # ax.add_artist(boundary)
-
     future_circles = []
     def update(frame_num):
         nonlocal global_step
@@ -534,13 +378,6 @@ def plot(env, test_case, model, robot, args, path):
 
         if args.plot_pred:
             preds = model.multistep_forward(batch_data, batch_graph, args.rollouts)
-            # for k in range(len(preds)):
-                # for i in range(model.num_humans):
-                    # print(' '.join(['{:.3f}'.format(preds[k][0][0,i,j].item()) for j in range(model.num_humans)]))
-                # print(env.centralized_planner.leaders)
-                # input()
-
-            # print(future_circles)
             for circle in future_circles:
                 circle.remove()
             future_circles = []
@@ -554,11 +391,11 @@ def plot(env, test_case, model, robot, args, path):
                     ax.add_artist(circle)
 
         # robot position
-        robot_circle.center = current_pos #robot_positions[frame_num]
+        robot_circle.center = current_pos
 
         # human position
         for i, human in enumerate(humans):
-            human.center = env.humans[i].get_position() # human_positions[frame_num][i]
+            human.center = env.humans[i].get_position()
             if display_numbers:
                 human_numbers[i].set_position((human.center[0] - x_offset, human.center[1] + y_offset))
 
@@ -573,7 +410,6 @@ def plot(env, test_case, model, robot, args, path):
             ax.add_artist(human_goal)
             human_goals.append(human_goal)
 
-
         # for boundary in boundaries:
             # boundary.remove()
         # boundaries = []
@@ -583,7 +419,6 @@ def plot(env, test_case, model, robot, args, path):
                                        # linewidth=3, linestyle='-', color='red')
             # ax.add_artist(boundary)
             # boundaries.append(boundary)
-
 
         # update orientation
         # for arrow in arrows:
@@ -602,25 +437,8 @@ def plot(env, test_case, model, robot, args, path):
                 direction = ((agent_state.px, agent_state.py), (agent_state.px + radius * np.cos(theta),
                                                                 agent_state.py + radius * np.sin(theta)))
             orientation.append(direction)
-
-        # for i in range(len(humans)+1):
-            # if i == 0:
-                # arrows = [patches.FancyArrowPatch(*orientation[0], color='black',
-                                                  # arrowstyle=arrow_style)]
-            # else:
-                # arrows.extend([patches.FancyArrowPatch(*orientation[i], color=cmap(i - 1),
-                                                       # arrowstyle=arrow_style)])
-        # for arrow in arrows:
-            # ax.add_artist(arrow)
-            # if hasattr(env.robot.policy, 'get_attention_weights'):
-            #     attention_scores[i].set_text('human {}: {:.2f}'.format(i, env.attention_weights[frame_num][i]))
-
         time.set_text('Time: {:.2f}'.format(global_step * env.time_step))
 
-        # if len(env.trajs) != 0:
-            # for i, circles in enumerate(human_future_circles):
-                # for j, circle in enumerate(circles):
-                    # circle.center = human_future_positions[global_step][i][j]
     global_step += 1
     fig.canvas.draw()
 
@@ -634,8 +452,7 @@ def plot(env, test_case, model, robot, args, path):
         ffmpeg_writer = animation.FFMpegWriter(fps=10, metadata=dict(artist='Me'), bitrate=1800)
         # writer = ffmpeg_writer(fps=10, metadata=dict(artist='Me'), bitrate=1800)
         anim.save(path, writer=ffmpeg_writer)
-        print('save file')
-
+        print('file saved.')
         # save output file as gif if imagemagic is installed
         # anim.save(output_file, writer='imagemagic', fps=12)
     else:
@@ -732,9 +549,51 @@ def main(args):
     for video_id in range(20):
         test_case += video_id
         path = '{}/{}.mp4'.format(args.output_dir, str(video_id))
-
         plot(env, test_case, model, robot, args, path)
 
+def visualize_trajectory(batch_data, batch_true, x_hat):
+    """
+    Plot the observed, ground truth, and predicted trajectories of agents.
+
+    Args:
+    batch_data: A tensor of shape (batch, timestep, agent, features) representing the observed trajectories.
+    batch_true: A tensor of shape (batch, timestep, agent, features) representing the ground truth future trajectories.
+    x_hat: A tensor of shape (batch, timestep, agent, features) representing the predicted future trajectories.
+    """
+    # Ensure numpy arrays for compatibility with matplotlib
+    batch_data = batch_data.cpu().numpy()
+    batch_true = batch_true.cpu().numpy()
+    x_hat = x_hat.cpu().numpy()
+
+    # The first dimension is batch size. For this visualization, we'll just look at the first example in the batch.
+    batch_data = batch_data[0]
+    batch_true = batch_true[0]
+    x_hat = x_hat[0]
+
+    colors = ['r', 'g', 'b', 'purple', 'peru']  # Colors for the different agents
+
+    plt.figure(figsize=(10, 10))
+    for agent in range(batch_data.shape[1]):
+
+        # Plot observed trajectory
+        plt.plot(batch_data[:, agent, 0], batch_data[:, agent, 1], '--', color=colors[agent], label='Observed' if agent == 0 else None)
+
+        # Plot ground truth future trajectory
+        plt.plot(batch_true[:, agent, 0], batch_true[:, agent, 1], '-', color=colors[agent], label='Ground truth' if agent == 0 else None)
+
+        # Plot the initial position
+        plt.scatter(batch_true[0, agent, 0], batch_true[0, agent, 1], color=colors[agent])
+
+        # Plot predicted future trajectory
+        for i in range(x_hat.shape[0]):
+            plt.scatter(x_hat[i, agent, 0], x_hat[i, agent, 1], color=colors[agent], s=100*(x_hat.shape[0]-i)/x_hat.shape[0], label='Predicted' if i==0 and agent == 0 else None)
+
+    plt.xlabel('X')
+    plt.xlim([0, 1])
+    plt.ylabel('Y')
+    plt.ylim([0, 1])
+    plt.legend(loc='upper right', bbox_to_anchor=(1.2, 1))
+    plt.show()
 
 
 if __name__ == '__main__':

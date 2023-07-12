@@ -10,7 +10,6 @@ import torch.nn as nn
 import torch.nn.functional as F
 import wandb
 from tqdm import tqdm
-
 from models.modules import mlp
 from utils import get_n_params, set_random_seeds
 from utils import get_graph_from_list, get_graph_from_label
@@ -19,6 +18,7 @@ from utils import get_output_dir
 from utils import total_correlation
 from data_utils.load_dataset import prepare_dataset
 from losses import calc_loss
+
 
 def evaluate(model, generator, args, scaling=None):
     device = args.device
@@ -53,7 +53,6 @@ def evaluate(model, generator, args, scaling=None):
 
     for j in range(len(tot)):
         tot[j] = tot[j] / len(generator.dataset)
-
     return tot
 
 def main(args):
