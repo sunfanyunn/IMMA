@@ -62,7 +62,7 @@ Loss curve visualized over the course of training IMMA with PLT on the NBA datas
 
 
 ## Citation
-If you find the codes or paper useful for your research, please cite the following papers:
+If you find the code or paper useful for your research, please cite our paper:
 ```bibtex
 @article{sun2022interaction,
   title={Interaction Modeling with Multiplex Attention},
